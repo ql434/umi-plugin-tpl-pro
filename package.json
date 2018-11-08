@@ -1,0 +1,22 @@
+{
+  "name": "umi-plugin-tpl-pro",
+  "version": "1.0.0",
+  "description": "umi plugin for pro",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "umi"
+  ],
+  "author": "ql434",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ql434/umi-plugin-tpl-pro.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ql434/umi-plugin-tpl-pro/issues"
+  },
+  "homepage": "https://github.com/ql434/umi-plugin-tpl-pro#readme"
+}
