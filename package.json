@@ -1,10 +1,11 @@
 {
   "name": "umi-plugin-tpl-pro",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "umi plugin for pro",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "dev": "npm run dev"
   },
   "keywords": [
     "umi"
