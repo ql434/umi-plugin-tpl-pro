@@ -1,0 +1,33 @@
+{
+  "name": "umi-plugin-tpl-pro",
+  "version": "0.0.2",
+  "description": "umi plugin for pro",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "dev": "npm run dev",
+    "build": "rimraf dist/ && babel ./lib/ --out-dir src/ --ignore ./template,./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "start": "npm run build && node dist/index.js"
+  },
+  "keywords": [
+    "umi"
+  ],
+  "author": "ql434",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ql434/umi-plugin-tpl-pro.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ql434/umi-plugin-tpl-pro/issues"
+  },
+  "homepage": "https://github.com/ql434/umi-plugin-tpl-pro#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "rimraf": "^2.6.2"
+  },
+  "dependencies": {
+    "umi-utils": "^1.2.1"
+  }
+}
