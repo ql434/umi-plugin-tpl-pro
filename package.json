@@ -1,5 +1,5 @@
 {
-  "name": "umi-plugin-tpl-pro",
+  "name": "@alitx/umi-plugin-tpl-pro",
   "version": "0.0.1",
   "description": "umi plugin for pro",
   "main": "index.js",
