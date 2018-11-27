@@ -30,6 +30,7 @@
     "rimraf": "^2.6.2"
   },
   "dependencies": {
+    "camelcase": "^5.0.0",
     "umi-utils": "^1.2.1"
   }
 }

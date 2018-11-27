@@ -7,6 +7,7 @@
  */
 import { join } from 'path';
 import assert from 'assert';
+import camelcase from 'camelcase';
 
 export default api => {
   const { paths, config } = api;
@@ -16,32 +17,43 @@ export default api => {
       if (config.routes) {
         api.log.error(`定制化路由，无法自动注入到路由中，请知晓`);
       }
-      const models = config.singular ? 'model' : 'models';
       const name = this.args[0].toString();
+      const modelName = camelcase(name);
+      api.log.error(modelName);
+      const pathList = name.split('/');
+      const modName = pathList.pop();
+      const targetPagePath = pathList.map(i => camelcase(i, { pascalCase: true }));
+      const targetServicePath = pathList.map(i => i.toLocaleLowerCase());
+      const pageName = camelcase(modelName, { pascalCase: true });
+      const serviceName = modelName.toLocaleLowerCase();
       assert(
         !name.includes('.'),
         `path should not contains /, bug got ${name}`,
       );
       this.fs.copyTpl(
         join(absTemplatePath, 'page.js'),
-        join(paths.absPagesPath, `${path}.js`),
+        join(paths.absPagesPath, targetPagePath.join('/'), `${pageName}.js`),
         {
-          name,
+          name: pageName,
         },
       );
       this.fs.copyTpl(
         join(absTemplatePath, 'page.css'),
-        join(paths.absPagesPath, `${path}.css`),
+        join(paths.absPagesPath, targetPagePath.join('/'), `${pageName}.css`),
         {
-          color: randomColor().hexString(),
+          color: "red",
         },
       );
       this.fs.copyTpl(
         join(absTemplatePath, 'model.js'),
-        join(paths.absSrcPath, 'models', `${name}.js`),
+        join(paths.absPagesPath, 'models', `${modelName}.js`),
         {
-          name,
+          name: modelName,
         },
+      );
+      this.fs.copyTpl(
+        join(absTemplatePath, 'service.js'),
+        join(paths.absSrcPath, 'services', targetServicePath.join('/'), `${serviceName}.js`)
       );
     }
   };
