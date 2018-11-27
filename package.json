@@ -1,6 +1,6 @@
 {
   "name": "umi-plugin-tpl-pro",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "umi plugin for pro",
   "main": "index.js",
   "scripts": {
