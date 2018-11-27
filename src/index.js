@@ -18,7 +18,6 @@ export default function (api, opts = {}) {
     opts = newOpts;
     api.rebuildTmpFiles();
   });
-  api.log.debug(api.registerGenerator)
   api.registerGenerator('pro:table', {
     Generator: require('./model').default(api),
     resolved: join(__dirname, './model'),

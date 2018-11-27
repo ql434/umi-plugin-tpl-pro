@@ -11,9 +11,6 @@ import assert from 'assert';
 export default api => {
   const { paths, config } = api;
   const absTemplatePath = join(__dirname, '../template/simpleTable');
-  api.log.debug(api.Generator)
-  console.log(absTemplatePath)
-  api.debug(absTemplatePath)
   return class Generator extends api.Generator {
     writing() {
       if (config.routes) {
@@ -21,7 +18,6 @@ export default api => {
       }
       const models = config.singular ? 'model' : 'models';
       const name = this.args[0].toString();
-      api.debug(name)
       assert(
         !name.includes('.'),
         `path should not contains /, bug got ${name}`,
@@ -40,7 +36,6 @@ export default api => {
           color: randomColor().hexString(),
         },
       );
-
       this.fs.copyTpl(
         join(absTemplatePath, 'model.js'),
         join(paths.absSrcPath, 'models', `${name}.js`),
