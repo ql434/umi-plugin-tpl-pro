@@ -18,14 +18,14 @@ export default api => {
         api.log.error(`定制化路由，无法自动注入到路由中，请知晓`);
       }
       const name = this.args[0].toString();
-      const modelName = camelcase(name);
-      api.log.error(modelName);
       const pathList = name.split('/');
+      const modelName = camelcase(pathList.join('_'));
       const modName = pathList.pop();
+      // pages路径统一规范为大写
       const targetPagePath = pathList.map(i => camelcase(i, { pascalCase: true }));
       const targetServicePath = pathList.map(i => i.toLocaleLowerCase());
-      const pageName = camelcase(modelName, { pascalCase: true });
-      const serviceName = modelName.toLocaleLowerCase();
+      const pageName = camelcase(modName, { pascalCase: true });
+      const serviceName = modName.toLocaleLowerCase();
       assert(
         !name.includes('.'),
         `path should not contains /, bug got ${name}`,
@@ -35,6 +35,7 @@ export default api => {
         join(paths.absPagesPath, targetPagePath.join('/'), `${pageName}.js`),
         {
           name: pageName,
+          modelName,
         },
       );
       this.fs.copyTpl(
@@ -46,9 +47,10 @@ export default api => {
       );
       this.fs.copyTpl(
         join(absTemplatePath, 'model.js'),
-        join(paths.absPagesPath, 'models', `${modelName}.js`),
+        join(paths.absPagesPath, pathList[0], 'models', `${modelName}.js`),
         {
           name: modelName,
+          servicePath: targetServicePath.join('/') + '/' + serviceName,
         },
       );
       this.fs.copyTpl(
