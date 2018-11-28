@@ -7,7 +7,7 @@
  */
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Form, Select, Button, Divider } from 'antd';
+import { Row, Col, Card, Form, Select, Button, Divider,Input } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import styles from './<%= name %>.css';
 
@@ -43,13 +43,13 @@ const mapDispatchToProps = dispatch => ({
 
 @connect(
   state => ({
-    loading: state.loading.models['<%= modelName %>'],
-    model: state['<%= modelName %>'],
+    loading: state.loading.models.<%= modelName %>,
+    model: state.<%= modelName %>,
   }),
   mapDispatchToProps
 )
 @Form.create({})
-class CreateSupplier extends PureComponent {
+class <%= name %> extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -154,20 +154,19 @@ class CreateSupplier extends PureComponent {
   renderForm() {
     const {
       form: { getFieldDecorator, getFieldValue },
-      model: { prodModel, vendor },
+      model: { prodModel=[], vendor=[] },
     } = this.props;
     const { prodModel: selectedProdModel } = this.state;
     return (
       <Form onSubmit={this.handleSearch}>
         <Row>
           <Col md={8} sm={24}>
-            <FormItem label="产品形态" {...formItemLayout} required>
-              {getFieldDecorator('prodModel', {
+            <FormItem label="Select下拉列表" {...formItemLayout} required>
+              {getFieldDecorator('select', {
                 initialValue: selectedProdModel,
-                rules: [{ type: 'string', required: true, message: '请选择产品形态!' }],
+                rules: [{ type: 'string', required: true, message: '请选择子项!' }],
               })(
                 <Select
-                  disabled
                   showSearch
                   style={{ width: 150 }}
                   placeholder="请选择产品形态"
@@ -181,15 +180,11 @@ class CreateSupplier extends PureComponent {
             </FormItem>
           </Col>
           <Col md={10} sm={24}>
-            <FormItem label="供应商" {...formItemLayout} required>
-              {getFieldDecorator('vendor', {
-                rules: [{ required: true, message: '请选择供应商!' }],
+            <FormItem label="Input输入项" {...formItemLayout} required>
+              {getFieldDecorator('input', {
+                rules: [{ required: true, message: '请输入xxx' }],
               })(
-                <Select prodModel={getFieldValue('prodModel')}>
-                  {vendor.map(d => (
-                    <Option key={d.value}>{d.label}</Option>
-                  ))}
-                </Select>
+                <Input placeholder="请输入xxxx" />
               )}
             </FormItem>
           </Col>
@@ -234,4 +229,4 @@ class CreateSupplier extends PureComponent {
   }
 }
 
-export default CreateSupplier;
+export default <%= name %>;

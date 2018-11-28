@@ -35,12 +35,12 @@ export default api => {
         join(paths.absPagesPath, targetPagePath.join('/'), `${pageName}.js`),
         {
           name: pageName,
-          modelName,
+          modelName:modelName,
         },
       );
       this.fs.copyTpl(
-        join(absTemplatePath, 'page.css'),
-        join(paths.absPagesPath, targetPagePath.join('/'), `${pageName}.css`),
+        join(absTemplatePath, 'page.less'),
+        join(paths.absPagesPath, targetPagePath.join('/'), `${pageName}.less`),
         {
           color: "red",
         },

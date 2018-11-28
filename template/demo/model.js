@@ -1,7 +1,7 @@
 /**
  * Copyright(c) Alibaba Group Holding Limited.
  *
- * @file:     简单table页面的model
+ * @file:     demo-model
  * @authors:  umi-plugin-tpl-pro 生成
  * @date      18/11/15
  */

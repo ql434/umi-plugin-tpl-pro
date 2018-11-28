@@ -19,7 +19,11 @@ export default function (api, opts = {}) {
     api.rebuildTmpFiles();
   });
   api.registerGenerator('pro:table', {
-    Generator: require('./model').default(api),
-    resolved: join(__dirname, './model'),
+    Generator: require('./simpleTable').default(api),
+    resolved: join(__dirname, './simpleTable'),
+  });
+  api.registerGenerator('pro:demo', {
+    Generator: require('./demo').default(api),
+    resolved: join(__dirname, './demo'),
   });
 }
