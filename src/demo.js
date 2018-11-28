@@ -11,7 +11,7 @@ import camelcase from 'camelcase';
 
 export default api => {
   const { paths, config } = api;
-  const absTemplatePath = join(__dirname, '../template/simpleTable');
+  const absTemplatePath = join(__dirname, '../template/demo');
   return class Generator extends api.Generator {
     writing() {
       if (config.routes) {

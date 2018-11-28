@@ -9,7 +9,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, Form, Select, Button, Divider,Input } from 'antd';
 import StandardTable from '@/components/StandardTable';
-import styles from './<%= name %>.css';
+import styles from './<%= name %>.less';
 
 const { Option } = Select;
 const FormItem = Form.Item;

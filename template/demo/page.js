@@ -8,7 +8,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import {  Card } from 'antd';
-import styles from './<%= name %>.css';
+import styles from './<%= name %>.less';
 
 const mapDispatchToProps = dispatch => ({
   queryInit() {
