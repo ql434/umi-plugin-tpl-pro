@@ -14,7 +14,6 @@ const INIT = '/xx/init/data';
 const QUERY = '/xx/list';
 const ADD = '/add/xx';
 const DEL = '/del/xx'; // 目前缺少
-const RUN = '/run/xx';
 
 const options = {
   isSimple: true,
@@ -37,6 +36,3 @@ export async function del(data) {
   return request(getCrmWebHost() + DEL, data, { ...options, isSimple: false });
 }
 
-export async function run(data) {
-  return request(getCrmWebHost() + RUN, data, { ...options, isSimple: false });
-}

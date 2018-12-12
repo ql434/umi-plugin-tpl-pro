@@ -5,14 +5,42 @@
  * @authors:  umi-plugin-tpl-pro生成
  * @date      18/11/15
  */
+
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Form, Select, Button, Divider,Input } from 'antd';
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Select,
+  DatePicker,
+  Button,
+  Divider,
+  Input,
+  notification,
+  Popconfirm,
+  Modal
+} from 'antd';
+import PageHeaderLayout from '@/layouts/PageHeaderLayout';
 import StandardTable from '@/components/StandardTable';
-import styles from './<%= name %>.less';
+import styles from './List.less';
+
+
+// 页面功能配置
+const PAGE_CONFIG = {
+  selectedRows: [],
+  showDel: true,
+  showAdd: true,
+  title: '这里是标题，不要记得删掉'
+};
+
 
 const { Option } = Select;
+const { Group: ButtonGroup } = Button;
+
 const FormItem = Form.Item;
+const { RangePicker } = DatePicker;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -23,28 +51,82 @@ const formItemLayout = {
     sm: { span: 16 },
   },
 };
+
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
+
+const CreateForm = Form.create()(props => {
+  const { modalVisible, form, handleAdd, handleModalVisible, loading } = props;
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      handleAdd(fieldsValue, form.resetFields);
+    });
+  };
+  return (
+    <Modal
+      destroyOnClose
+      title="新增"
+      visible={modalVisible}
+      confirmLoading={loading}
+      onOk={okHandle}
+      onCancel={() => handleModalVisible()}
+    >
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="输入1">
+        {form.getFieldDecorator('input1', {
+          rules: [{ required: true, message: '请输入xxx！' }],
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="输入2">
+        {form.getFieldDecorator('input2', {
+          rules: [{ required: true, message: '请输入xxx！' }],
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
+        {form.getFieldDecorator('desc', {
+          rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+    </Modal>
+  );
+});
+
+
 const mapDispatchToProps = dispatch => ({
   queryInit() {
     dispatch({
-      type: '<%= modelName %>/queryInit',
+      type: '<%= modelName %>/fetchInit',
     });
   },
   queryList(params) {
     dispatch({
-      type: '<%= modelName %>/queryList',
+      type: '<%= modelName %>/fetchList',
       payload: params,
     });
   },
+  del(params, callback) {
+    dispatch({
+      type: '<%= modelName %>/delItem',
+      payload: params,
+      callback
+    });
+  },
+  add(params, callback) {
+    dispatch({
+      type: '<%= modelName %>/addItem',
+      payload: params,
+      callback
+    });
+  }
 });
 
 @connect(
-  state => ({
-    loading: state.loading.models.<%= modelName %>,
-    model: state.<%= modelName %>,
+  ({ loading, <%= modelName %> }) => ({
+    listLoading: loading.effects['<%= modelName %>/fetchList'],
+    addLoading: loading.effects['<%= modelName %>/addItem'],
+    model: <%= modelName %>,
   }),
   mapDispatchToProps
 )
@@ -54,11 +136,14 @@ class <%= name %> extends PureComponent {
     super(props);
     this.state = {
       formValues: {},
+      // 删掉这行，所有多项操作都会隐藏掉
+      selectedRows: PAGE_CONFIG.selectedRows,
+      modalVisible: false,
     };
   }
 
   componentDidMount() {
-    this.props.queryInit();
+    // this.props.queryInit();
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -82,26 +167,35 @@ class <%= name %> extends PureComponent {
       formValues: params,
     });
   };
+
   handleSearch = e => {
     if (e) {
       e.preventDefault();
     }
-    const { form } = this.props;
+    const { form, queryList } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       this.setState({
         formValues: fieldsValue,
       });
-      this.props.queryList({
+      queryList({
+        current: 1,
+        pageSize: 10,
+        ...fieldsValue,
+      });
+      // warning,调试参数，调试完成请移除,时间格式为moment，请自行处理
+      console.log('搜索参数', {
         current: 1,
         pageSize: 10,
         ...fieldsValue,
       });
     });
   };
+
   resetForm = () => {
     this.props.form.resetFields();
   };
+
   /**
    * 定义列
    */
@@ -110,91 +204,178 @@ class <%= name %> extends PureComponent {
     return [
       {
         title: 'ID',
-        dataIndex: 'supplierName',
-        key: 'supplierName',
+        dataIndex: 'id',
+        key: 'id',
       },
       {
         title: 'Name',
-        dataIndex: 'supplierCustId',
-        key: 'supplierCustId',
+        dataIndex: 'name',
+        key: 'name',
       },
       {
         title: 'col3',
-        dataIndex: 'billId',
-        key: 'billId',
+        dataIndex: 'col3',
+        key: 'col3',
       },
       {
         title: 'col4',
-        dataIndex: 'billId',
-        key: 'billId',
+        dataIndex: 'col4',
+        key: 'col4',
       },
       {
         title: 'col5',
-        dataIndex: 'billId',
-        key: 'billId',
+        dataIndex: 'col5',
+        key: 'col5',
       },
       {
         title: 'col6',
-        dataIndex: 'billId',
-        key: 'billId',
+        dataIndex: 'col6',
+        key: 'col6',
       },
       {
         title: '操作',
-        dataIndex: 'supplierBillId',
-        key: 'supplierBillId',
-        render(row, record) {
+        dataIndex: 'id',
+        key: 'id',
+        fixed: 'right',
+        width: 150,
+        render(id) {
           const operateList = [];
-          operateList.push(<a href="#">详情</a>);
+          operateList.push(<a style={!PAGE_CONFIG.showDel ? { cursor: "not-allowed" } : null}>详情</a>);
+          operateList.push(<Divider type="vertical" />);
+          operateList.push(
+            <Popconfirm title="确定删除?" onConfirm={() => that.del(id)}>
+              <a disabled={!PAGE_CONFIG.showDel}>删除</a>
+            </Popconfirm>);
           return operateList;
         },
       },
     ];
   };
 
+  handleModalVisible = flag => {
+    this.setState({
+      modalVisible: !!flag,
+    });
+  };
+
+  handleAdd = (fields, callback) => {
+    const { add } = this.props;
+    add(fields, () => {
+      notification.success({
+        message: '添加成功',
+      });
+      this.handleModalVisible();
+      callback(); // 成功后才清空表单
+    })
+
+  };
+
+  // 可以要求后端接口支持批量操作，按，分隔
+  del = (id) => {
+    const { del, queryList } = this.props;
+    const { formValues } = this.state;
+    del({ id }, () => {
+      notification.success({
+        message: '删除成功',
+      });
+      queryList(formValues);
+    })
+  };
+
+  bulkDel = () => {
+    const { selectedRows } = this.state;
+    // 只传id
+    this.del(selectedRows.map(({ id }) => id).join(','));
+  };
+
+  bulkAction = () => {
+    const { selectedRows } = this.state;
+    // 只传id
+    console.log(selectedRows.map(({ id }) => id).join(','))
+  };
+
+  handleSelectRows = rows => {
+    this.setState({
+      selectedRows: rows,
+    });
+  };
+
   renderForm() {
     const {
-      form: { getFieldDecorator, getFieldValue },
-      model: { prodModel=[], vendor=[] },
+      form: { getFieldDecorator },
+      model: {
+        initData: {
+          select = []
+        }
+      },
+      listLoading,
     } = this.props;
-    const { prodModel: selectedProdModel } = this.state;
+    const rangeConfig = {
+      rules: [{ type: 'array', required: true, message: 'Please select time!' }],
+    };
     return (
       <Form onSubmit={this.handleSearch}>
         <Row>
           <Col md={8} sm={24}>
-            <FormItem label="Select下拉列表" {...formItemLayout} required>
+            <FormItem label="下拉列表" {...formItemLayout} required>
               {getFieldDecorator('select', {
-                initialValue: selectedProdModel,
                 rules: [{ type: 'string', required: true, message: '请选择子项!' }],
               })(
                 <Select
                   showSearch
-                  style={{ width: 150 }}
-                  placeholder="请选择产品形态"
-                  optionFilterProp="children"
+                  placeholder="请选择xxx"
                 >
-                  {prodModel.map(d => (
+                  {select.map(d => (
                     <Option key={d.value}>{d.label}</Option>
                   ))}
                 </Select>
               )}
             </FormItem>
           </Col>
-          <Col md={10} sm={24}>
-            <FormItem label="Input输入项" {...formItemLayout} required>
-              {getFieldDecorator('input', {
+          <Col md={8} sm={24}>
+            <FormItem label="输入项1" {...formItemLayout} required>
+              {getFieldDecorator('input1', {
                 rules: [{ required: true, message: '请输入xxx' }],
               })(
                 <Input placeholder="请输入xxxx" />
               )}
             </FormItem>
           </Col>
-          <Col md={6} sm={24}>
+          <Col md={8} sm={24}>
+            <FormItem label="输入项2" {...formItemLayout} required>
+              {getFieldDecorator('input2', {
+                rules: [{ required: true, message: '请输入xxx' }],
+              })(
+                <Input placeholder="请输入xxxx" />
+              )}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="输入项3" {...formItemLayout} required>
+              {getFieldDecorator('input3', {
+                rules: [{ required: true, message: '请输入xxx' }],
+              })(
+                <Input placeholder="请输入xxxx" />
+              )}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem
+              {...formItemLayout}
+              label="时间"
+            >
+              {getFieldDecorator('range-time-picker', rangeConfig)(
+                <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+              )}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
             <span style={{ float: 'right' }}>
-              <Button onClick={this.resetForm} style={{ marginRight: 24 }}>
-                重置
-              </Button>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" style={{ marginRight: 24 }} loading={listLoading}>
                 查询
+              </Button>
+              <Button onClick={this.resetForm}>
+                重置
               </Button>
             </span>
           </Col>
@@ -206,25 +387,59 @@ class <%= name %> extends PureComponent {
   render() {
     const {
       model: { data },
-      loading,
-    } = this.props;
+      listLoading,
+      addLoading,
+  } = this.props;
+    const { selectedRows, modalVisible } = this.state;
     const columns = this.defineColumns();
-    return (<Card bordered={false} title="新建供应商">
-        <div className={styles.tableList}>
-          <div> {this.renderForm()}</div>
-          <Divider />
-          <div className={styles.tableListOperator}>
+    const parentMethods = {
+      handleAdd: this.handleAdd,
+      handleModalVisible: this.handleModalVisible,
+    };
+    return (
+      <PageHeaderLayout title={PAGE_CONFIG.title}>
+        <Card bordered={false}>
+          <div className={styles.tableList}>
+            <div> {this.renderForm()}</div>
+            <Divider />
+            {PAGE_CONFIG.showAdd ?
+              <Button onClick={() => this.handleModalVisible(true)} type="primary" style={{ marginBottom: 16 }}>
+                新增
+              </Button> : null}
+
+            {selectedRows ? (
+              <ButtonGroup style={{ marginLeft: 16 }}>
+                <Button
+                  disabled={!selectedRows || !selectedRows.length}
+                  onClick={() => {
+                    this.bulkDel()
+                  }}
+                >
+                  批量删除
+                </Button>
+                <Button
+                  disabled={!selectedRows || !selectedRows.length}
+                  onClick={() => {
+                    this.bulkAction()
+                  }}
+                >
+                  自定义批量操作
+                </Button>
+              </ButtonGroup>
+            ) : null}
+            <StandardTable
+              columns={columns}
+              loading={listLoading}
+              data={data}
+              selectedRows={selectedRows}
+              onSelectRow={this.handleSelectRows}
+              onChange={this.handleStandardTableChange}
+              getCheckboxProps={this.disabledChecked}
+            />
           </div>
-          <StandardTable
-            columns={columns}
-            loading={loading}
-            data={data}
-            onSelectRow={this.handleSelectRows}
-            onChange={this.handleStandardTableChange}
-            getCheckboxProps={this.disabledChecked}
-          />
-        </div>
-      </Card>
+        </Card>
+        <CreateForm {...parentMethods} modalVisible={modalVisible} loading={addLoading} />
+      </PageHeaderLayout>
     );
   }
 }

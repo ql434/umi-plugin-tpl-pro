@@ -13,12 +13,12 @@ import styles from './<%= name %>.less';
 const mapDispatchToProps = dispatch => ({
   queryInit() {
     dispatch({
-      type: '<%= modelName %>/queryInit',
+      type: '<%= modelName %>/fetchInit',
     });
   },
   queryList(params) {
     dispatch({
-      type: '<%= modelName %>/queryList',
+      type: '<%= modelName %>/fetchList',
       payload: params,
     });
   },
