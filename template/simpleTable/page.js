@@ -24,7 +24,7 @@ import {
 } from 'antd';
 import PageHeaderLayout from '@/layouts/PageHeaderLayout';
 import StandardTable from '@/components/StandardTable';
-import styles from './List.less';
+import styles from './<%= name %>.less';
 
 
 // 页面功能配置
